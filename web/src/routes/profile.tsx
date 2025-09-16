@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button } from 'shared'
 import { User, Mail, Phone, MapPin, Edit, Settings, Bell } from 'lucide-react'
 
 export const Route = createFileRoute('/profile')({
