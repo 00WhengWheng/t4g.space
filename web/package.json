@@ -11,6 +11,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.4.0",
     "@tanstack/react-router": "^1.131.44",
     "@tanstack/router-devtools": "^1.131.44",
     "@tanstack/router-vite-plugin": "^1.131.44",
@@ -19,8 +20,8 @@
     "lucide-react": "^0.544.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "tailwind-merge": "^3.3.1",
-    "shared": "*"
+    "shared": "*",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

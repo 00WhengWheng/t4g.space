@@ -1,6 +1,6 @@
 # T4G.Space - Tag 4 Gift Business Platform
 
-A modern business dashboard platform built with Turborepo, featuring both web and mobile applications with shared components.
+A modern business dashboard platform built with Turborepo, featuring both web and mobile applications with shared components and Auth0 tenant authentication.
 
 ## 📁 Project Structure
 
@@ -13,6 +13,23 @@ t4g.space/
 ├── shared/       # Shared components and utilities
 └── turbo.json    # Turborepo configuration
 ```
+
+## 🔐 Authentication
+
+The application uses Auth0 for tenant authentication. All dashboard routes are protected and require business account authentication.
+
+### Setup Auth0
+
+1. Copy `web/.env.example` to `web/.env`
+2. Configure your Auth0 credentials
+3. See `AUTH0_SETUP.md` for detailed configuration instructions
+
+### Features
+
+- **Tenant Authentication**: Secure login for business users
+- **Role-Based Access**: Admin and standard user roles
+- **Route Protection**: All dashboard routes require authentication
+- **User Profile**: Display tenant information and business details
 
 ## 🚀 Getting Started
 
@@ -68,17 +85,19 @@ npm run shared:dev
 
 A modern React web application featuring:
 - **Framework**: React 19 + Vite
+- **Authentication**: Auth0 tenant authentication for business users
 - **Routing**: TanStack Router with file-based routing
 - **Styling**: Tailwind CSS
 - **UI Components**: Custom components with class-variance-authority
 - **TypeScript**: Full type safety
 
 Available routes:
-- `/` - Dashboard home
-- `/analytics` - Business analytics
-- `/gift` - Gift management
-- `/challenge` - Challenge system
-- `/profile` - User profile
+- `/` - Dashboard home (protected)
+- `/analytics` - Business analytics (protected)
+- `/gift` - Gift management (protected)
+- `/challenge` - Challenge system (protected)
+- `/profile` - Tenant user profile (protected)
+- `/callback` - Auth0 authentication callback
 
 #### Development
 
