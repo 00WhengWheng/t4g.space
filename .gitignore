@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# Turborepo
+.turbo
+
+# Expo
+mobile/.expo
+mobile/web-build
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

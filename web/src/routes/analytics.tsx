@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'shared'
 import { BarChart3, TrendingUp, Users, Calendar } from 'lucide-react'
 
 export const Route = createFileRoute('/analytics')({
