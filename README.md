@@ -1,6 +1,6 @@
 # T4G.Space - Tag 4 Gift Business Platform
 
-A modern business dashboard platform built with Turborepo, featuring both web and mobile applications with shared components and Auth0 tenant authentication.
+A modern business dashboard platform built with Turborepo, featuring both web and mobile applications with shared components, Auth0 tenant authentication, and tRPC API integration.
 
 ## 📁 Project Structure
 
@@ -8,10 +8,13 @@ This is a turborepo monorepo with the following structure:
 
 ```
 t4g.space/
-├── web/          # React web application (Vite + TanStack Router)
-├── mobile/       # React Native mobile app (Expo)
-├── shared/       # Shared components and utilities
-└── turbo.json    # Turborepo configuration
+├── web/                     # React web application (Vite + TanStack Router)
+├── mobile/                  # React Native mobile app (Expo)
+├── shared/                  # Shared components and utilities
+├── packages/
+│   └── types/              # Shared TypeScript types for frontend/backend
+├── backend/                 # Git submodule: t4g-NestJS-Fastify backend
+└── turbo.json              # Turborepo configuration
 ```
 
 ## 🔐 Authentication
