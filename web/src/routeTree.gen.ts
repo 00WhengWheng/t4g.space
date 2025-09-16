@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as GiftRouteImport } from './routes/gift'
 import { Route as ChallengeRouteImport } from './routes/challenge'
+import { Route as CallbackRouteImport } from './routes/callback'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -30,6 +31,11 @@ const ChallengeRoute = ChallengeRouteImport.update({
   path: '/challenge',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CallbackRoute = CallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnalyticsRoute = AnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
@@ -44,6 +50,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
+  '/callback': typeof CallbackRoute
   '/challenge': typeof ChallengeRoute
   '/gift': typeof GiftRoute
   '/profile': typeof ProfileRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
+  '/callback': typeof CallbackRoute
   '/challenge': typeof ChallengeRoute
   '/gift': typeof GiftRoute
   '/profile': typeof ProfileRoute
@@ -59,21 +67,36 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
+  '/callback': typeof CallbackRoute
   '/challenge': typeof ChallengeRoute
   '/gift': typeof GiftRoute
   '/profile': typeof ProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/analytics' | '/challenge' | '/gift' | '/profile'
+  fullPaths:
+    | '/'
+    | '/analytics'
+    | '/callback'
+    | '/challenge'
+    | '/gift'
+    | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analytics' | '/challenge' | '/gift' | '/profile'
-  id: '__root__' | '/' | '/analytics' | '/challenge' | '/gift' | '/profile'
+  to: '/' | '/analytics' | '/callback' | '/challenge' | '/gift' | '/profile'
+  id:
+    | '__root__'
+    | '/'
+    | '/analytics'
+    | '/callback'
+    | '/challenge'
+    | '/gift'
+    | '/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyticsRoute: typeof AnalyticsRoute
+  CallbackRoute: typeof CallbackRoute
   ChallengeRoute: typeof ChallengeRoute
   GiftRoute: typeof GiftRoute
   ProfileRoute: typeof ProfileRoute
@@ -102,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChallengeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/callback': {
+      id: '/callback'
+      path: '/callback'
+      fullPath: '/callback'
+      preLoaderRoute: typeof CallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/analytics': {
       id: '/analytics'
       path: '/analytics'
@@ -122,6 +152,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyticsRoute: AnalyticsRoute,
+  CallbackRoute: CallbackRoute,
   ChallengeRoute: ChallengeRoute,
   GiftRoute: GiftRoute,
   ProfileRoute: ProfileRoute,

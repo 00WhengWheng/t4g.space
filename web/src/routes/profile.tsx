@@ -1,19 +1,23 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button } from 'shared'
-import { User, Mail, Phone, MapPin, Edit, Settings, Bell } from 'lucide-react'
+import { User, Mail, Edit, Settings, Bell, Shield, Building, Calendar, Crown } from 'lucide-react'
+import { useTenantAuth } from '../lib/tenant-auth'
 
 export const Route = createFileRoute('/profile')({
   component: ProfileSection,
 })
 
 function ProfileSection() {
-  const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    location: "New York, NY",
-    joinDate: "January 2023",
-    avatar: "👤"
+  const { 
+    user, 
+    isTenantAdmin, 
+    getTenantId, 
+    getBusinessName,
+    isAuthenticated 
+  } = useTenantAuth()
+
+  if (!isAuthenticated || !user) {
+    return null // This will be handled by TenantGuard
   }
 
   const stats = [
@@ -26,9 +30,9 @@ function ProfileSection() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight">Profile</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Tenant Profile</h1>
         <p className="text-xl text-muted-foreground mt-2">
-          Manage your account and preferences
+          Manage your business account and preferences
         </p>
       </div>
 
@@ -36,27 +40,65 @@ function ProfileSection() {
         <div className="lg:col-span-1">
           <Card>
             <CardHeader className="text-center">
-              <div className="text-6xl mb-4">{user.avatar}</div>
-              <CardTitle>{user.name}</CardTitle>
-              <CardDescription>Business Owner</CardDescription>
+              {user.picture ? (
+                <img 
+                  src={user.picture} 
+                  alt={user.name || 'User'} 
+                  className="w-24 h-24 rounded-full mx-auto mb-4"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <User className="w-12 h-12 text-primary" />
+                </div>
+              )}
+              <CardTitle className="flex items-center justify-center gap-2">
+                {user.name}
+                {isTenantAdmin() && (
+                  <Crown className="w-4 h-4 text-yellow-500" />
+                )}
+              </CardTitle>
+              <CardDescription>
+                {isTenantAdmin() ? 'Business Administrator' : 'Tenant User'}
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">{user.email}</span>
               </div>
+              
+              {getBusinessName() && (
+                <div className="flex items-center space-x-3">
+                  <Building className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">{getBusinessName()}</span>
+                </div>
+              )}
+              
               <div className="flex items-center space-x-3">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{user.phone}</span>
+                <Shield className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">
+                  {isTenantAdmin() ? 'Administrator' : 'Standard User'}
+                </span>
               </div>
-              <div className="flex items-center space-x-3">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{user.location}</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">Member since {user.joinDate}</span>
-              </div>
+              
+              {getTenantId() && (
+                <div className="flex items-center space-x-3">
+                  <span className="text-muted-foreground text-sm">Tenant ID:</span>
+                  <code className="text-xs bg-muted px-2 py-1 rounded">
+                    {getTenantId()}
+                  </code>
+                </div>
+              )}
+              
+              {user.updated_at && (
+                <div className="flex items-center space-x-3">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">
+                    Last updated: {new Date(user.updated_at).toLocaleDateString()}
+                  </span>
+                </div>
+              )}
+              
               <div className="pt-4 space-y-2">
                 <Button className="w-full">
                   <Edit className="mr-2 h-4 w-4" />
@@ -64,7 +106,7 @@ function ProfileSection() {
                 </Button>
                 <Button variant="outline" className="w-full">
                   <Settings className="mr-2 h-4 w-4" />
-                  Settings
+                  Account Settings
                 </Button>
               </div>
             </CardContent>
@@ -74,8 +116,8 @@ function ProfileSection() {
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Account Statistics</CardTitle>
-              <CardDescription>Your performance metrics</CardDescription>
+              <CardTitle>Business Statistics</CardTitle>
+              <CardDescription>Your business performance metrics</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-2">
@@ -92,7 +134,7 @@ function ProfileSection() {
           <Card>
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Your latest actions and updates</CardDescription>
+              <CardDescription>Your latest business actions and updates</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -113,7 +155,7 @@ function ProfileSection() {
                 <div className="flex items-center space-x-4 p-3 bg-muted rounded-lg">
                   <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium">Updated profile information</p>
+                    <p className="text-sm font-medium">Updated tenant profile information</p>
                     <p className="text-xs text-muted-foreground">3 days ago</p>
                   </div>
                 </div>
@@ -123,31 +165,33 @@ function ProfileSection() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Preferences</CardTitle>
-              <CardDescription>Customize your experience</CardDescription>
+              <CardTitle>Account Preferences</CardTitle>
+              <CardDescription>Customize your tenant experience</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Bell className="h-4 w-4" />
-                  <span className="text-sm font-medium">Email Notifications</span>
+                  <span className="text-sm font-medium">Business Notifications</span>
                 </div>
                 <Button variant="outline" size="sm">Configure</Button>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Settings className="h-4 w-4" />
-                  <span className="text-sm font-medium">Privacy Settings</span>
+                  <span className="text-sm font-medium">Privacy & Security</span>
                 </div>
                 <Button variant="outline" size="sm">Manage</Button>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <User className="h-4 w-4" />
-                  <span className="text-sm font-medium">Account Security</span>
+              {isTenantAdmin() && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <Shield className="h-4 w-4" />
+                    <span className="text-sm font-medium">Admin Settings</span>
+                  </div>
+                  <Button variant="outline" size="sm">Configure</Button>
                 </div>
-                <Button variant="outline" size="sm">Update</Button>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>

@@ -1,20 +1,35 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button } from 'shared'
-import { Gift, Users, TrendingUp, Star } from 'lucide-react'
+import { Gift, Users, TrendingUp, Star, Crown } from 'lucide-react'
+import { useTenantAuth } from '../lib/tenant-auth'
 
 export const Route = createFileRoute('/')({
   component: Dashboard,
 })
 
 function Dashboard() {
+  const { user, getBusinessName, isTenantAdmin } = useTenantAuth()
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight">
+        <h1 className="text-4xl font-bold tracking-tight flex items-center gap-3">
           Welcome to T4G.Space
+          {isTenantAdmin() && (
+            <Crown className="h-8 w-8 text-yellow-500" />
+          )}
         </h1>
         <p className="text-xl text-muted-foreground mt-2">
-          Tag 4 Gift Business Dashboard
+          {getBusinessName() 
+            ? `${getBusinessName()} Business Dashboard`
+            : `${user?.name || 'Tenant'} Business Dashboard`
+          }
+        </p>
+        <p className="text-muted-foreground">
+          {isTenantAdmin() 
+            ? 'You have full administrative access to manage your business.'
+            : 'You have access to view and manage business operations.'
+          }
         </p>
       </div>
 
@@ -115,7 +130,12 @@ function Dashboard() {
               <Gift className="mr-2 h-4 w-4" />
               Create New Gift
             </Button>
-            <Button variant="outline" className="w-full justify-start">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start"
+              disabled={!isTenantAdmin()}
+              title={!isTenantAdmin() ? "Admin access required" : ""}
+            >
               <Users className="mr-2 h-4 w-4" />
               Manage Users
             </Button>
