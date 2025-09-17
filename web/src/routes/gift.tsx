@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button } from 'shared'
-import { Gift, Package, Star, Plus } from 'lucide-react'
+import { Gift, Package, Star, Plus, Settings } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useApiService } from '../lib/api-service'
-import type { Gift as GiftType } from '@t4g/types'
+import type { Gift as GiftType, GiftType as GiftTypeEnum, DrinkCategory } from '@t4g/types'
 
 export const Route = createFileRoute('/gift')({
   component: GiftSection,
@@ -28,7 +28,15 @@ function GiftSection() {
       createdBy: "admin",
       createdAt: new Date(),
       updatedAt: new Date(),
-      organizationId: "org-1"
+      organizationId: "org-1",
+      settings: {
+        scanActions: 8,
+        shareActions: 3,
+        gameActions: 8,
+        timeframeMonths: 1,
+        giftType: 'drink' as GiftTypeEnum,
+        drinkCategory: 'cafe' as DrinkCategory,
+      }
     },
     {
       id: "2", 
@@ -41,7 +49,15 @@ function GiftSection() {
       createdBy: "admin",
       createdAt: new Date(),
       updatedAt: new Date(),
-      organizationId: "org-1"
+      organizationId: "org-1",
+      settings: {
+        scanActions: 5,
+        shareActions: 2,
+        gameActions: 5,
+        timeframeMonths: 1,
+        giftType: 'drink' as GiftTypeEnum,
+        drinkCategory: 'pizza' as DrinkCategory,
+      }
     },
     {
       id: "3",
@@ -54,7 +70,15 @@ function GiftSection() {
       createdBy: "admin",
       createdAt: new Date(),
       updatedAt: new Date(),
-      organizationId: "org-1"
+      organizationId: "org-1",
+      settings: {
+        scanActions: 12,
+        shareActions: 5,
+        gameActions: 10,
+        timeframeMonths: 1,
+        giftType: 'drink' as GiftTypeEnum,
+        drinkCategory: 'bottle_wine' as DrinkCategory,
+      }
     }
   ]
 
@@ -99,7 +123,7 @@ function GiftSection() {
         </Button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Gifts</CardTitle>
@@ -154,6 +178,23 @@ function GiftSection() {
             </div>
             <p className="text-xs text-muted-foreground">
               Total portfolio value
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Default Settings</CardTitle>
+            <Settings className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-sm space-y-1">
+              <div>Scan: <span className="font-bold">8</span></div>
+              <div>Share: <span className="font-bold">3</span></div>
+              <div>Game: <span className="font-bold">8</span></div>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Default actions
             </p>
           </CardContent>
         </Card>
@@ -216,6 +257,25 @@ function GiftSection() {
                       </span>
                     </div>
                   </div>
+                  
+                  {gift.settings && (
+                    <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                      <h4 className="text-sm font-medium mb-2">Gift Configuration</h4>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>Scan Actions: <span className="font-semibold">{gift.settings.scanActions}</span></div>
+                        <div>Share Actions: <span className="font-semibold">{gift.settings.shareActions}</span></div>
+                        <div>Game Actions: <span className="font-semibold">{gift.settings.gameActions}</span></div>
+                        <div>Duration: <span className="font-semibold">{gift.settings.timeframeMonths}mo</span></div>
+                      </div>
+                      <div className="mt-2 text-xs">
+                        <div>Type: <span className="font-semibold capitalize">{gift.settings.giftType}</span></div>
+                        {gift.settings.drinkCategory && (
+                          <div>Category: <span className="font-semibold capitalize">{gift.settings.drinkCategory.replace('_', ' ')}</span></div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="space-y-2">
                     <Button className="w-full">Edit Gift</Button>
                     <Button variant="outline" className="w-full">View Details</Button>

@@ -38,6 +38,29 @@ export interface TenantSettings {
 }
 
 // Gift Management Types
+export enum GiftType {
+  DRINK = 'drink',
+  EXPERIENCE = 'experience',
+  PRODUCT = 'product',
+  SERVICE = 'service',
+}
+
+export enum DrinkCategory {
+  CAFE = 'cafe',
+  PIZZA = 'pizza',
+  BOTTLE_WINE = 'bottle_wine',
+  DISCOUNT = 'discount',
+}
+
+export interface GiftSettings {
+  scanActions: number;
+  shareActions: number;
+  gameActions: number;
+  timeframeMonths: number;
+  giftType: GiftType;
+  drinkCategory?: DrinkCategory;
+}
+
 export interface Gift {
   id: string;
   name: string;
@@ -50,7 +73,18 @@ export interface Gift {
   createdAt: Date;
   updatedAt: Date;
   organizationId: string;
+  settings?: GiftSettings;
 }
+
+// Default gift settings as specified in requirements
+export const DEFAULT_GIFT_SETTINGS: GiftSettings = {
+  scanActions: 8,
+  shareActions: 3,
+  gameActions: 8,
+  timeframeMonths: 1,
+  giftType: GiftType.DRINK,
+  drinkCategory: DrinkCategory.CAFE,
+};
 
 // Challenge Management Types
 export interface Challenge {

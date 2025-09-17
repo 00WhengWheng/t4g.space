@@ -1,4 +1,5 @@
 import { useTenantAuth } from './tenant-auth';
+import type { Gift } from '@t4g/types';
 
 const API_BASE_URL = '/api';
 
@@ -62,6 +63,47 @@ export class ApiService {
     
     return response.json();
   }
+
+  async createGift(token: string, giftData: Partial<Gift>) {
+    const response = await fetch(`${API_BASE_URL}/tenants/gifts`, {
+      method: 'POST',
+      headers: this.getHeaders(token),
+      body: JSON.stringify(giftData),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to create gift');
+    }
+    
+    return response.json();
+  }
+
+  async updateGift(token: string, giftId: string, giftData: Partial<Gift>) {
+    const response = await fetch(`${API_BASE_URL}/tenants/gifts/${giftId}`, {
+      method: 'PUT',
+      headers: this.getHeaders(token),
+      body: JSON.stringify(giftData),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update gift');
+    }
+    
+    return response.json();
+  }
+
+  async deleteGift(token: string, giftId: string) {
+    const response = await fetch(`${API_BASE_URL}/tenants/gifts/${giftId}`, {
+      method: 'DELETE',
+      headers: this.getHeaders(token),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to delete gift');
+    }
+    
+    return response.json();
+  }
 }
 
 export const apiService = new ApiService();
@@ -84,5 +126,8 @@ export function useApiService() {
     getDashboardAnalytics: () => callApi(apiService.getDashboardAnalytics),
     getGifts: () => callApi(apiService.getGifts),
     getChallenges: () => callApi(apiService.getChallenges),
+    createGift: (giftData: Partial<Gift>) => callApi((token) => apiService.createGift(token, giftData)),
+    updateGift: (giftId: string, giftData: Partial<Gift>) => callApi((token) => apiService.updateGift(token, giftId, giftData)),
+    deleteGift: (giftId: string) => callApi((token) => apiService.deleteGift(token, giftId)),
   };
 }
