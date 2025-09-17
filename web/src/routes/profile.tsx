@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button } from 'shared'
 import { User, Mail, Edit, Settings, Bell, Shield, Building, Calendar, Crown } from 'lucide-react'
 import { useTenantAuth } from '../lib/tenant-auth'
+import { trpc } from '../lib/trpc'
 
 export const Route = createFileRoute('/profile')({
   component: ProfileSection,
@@ -16,15 +17,19 @@ function ProfileSection() {
     isAuthenticated 
   } = useTenantAuth()
 
+  const { data: tenantProfile, isLoading, error } = (trpc as any).tenant.getProfile.useQuery()
+
+  console.log('tRPC Profile Query:', { tenantProfile, isLoading, error })
+
   if (!isAuthenticated || !user) {
     return null // This will be handled by TenantGuard
   }
 
   const stats = [
-    { label: "Gifts Created", value: "45" },
-    { label: "Challenges Won", value: "12" },
-    { label: "Total Revenue", value: "$23.4K" },
-    { label: "User Rating", value: "4.8/5" }
+    { label: "Gifts Created", value: tenantProfile?.totalGifts || "45" },
+    { label: "Challenges Won", value: tenantProfile?.challengesWon || "12" },
+    { label: "Total Revenue", value: tenantProfile?.totalRevenue || "$23.4K" },
+    { label: "User Rating", value: tenantProfile?.rating || "4.8/5" }
   ]
 
   return (

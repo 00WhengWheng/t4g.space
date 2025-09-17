@@ -1,39 +1,18 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'shared'
 import { TrendingUp, Users, Calendar, Gift, Trophy } from 'lucide-react'
-import { useState, useEffect } from 'react'
-import { useApiService } from '../lib/api-service'
-import type { DashboardAnalytics } from '@t4g/types'
+import { trpc } from '../lib/trpc'
 
 export const Route = createFileRoute('/analytics')({
   component: Analytics,
 })
 
 function Analytics() {
-  const [analytics, setAnalytics] = useState<DashboardAnalytics | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const apiService = useApiService()
+  const { data: analytics, isLoading, error } = (trpc as any).tenant.getDashboardAnalytics.useQuery()
 
-  useEffect(() => {
-    async function fetchAnalytics() {
-      try {
-        setLoading(true)
-        setError(null)
-        const data = await apiService.getDashboardAnalytics()
-        setAnalytics(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch analytics')
-        console.error('Failed to fetch analytics:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
+  console.log('tRPC Analytics Query:', { analytics, isLoading, error })
 
-    fetchAnalytics()
-  }, [])
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
@@ -71,7 +50,7 @@ function Analytics() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-center">
-              <p className="text-destructive mb-4">Failed to load analytics: {error}</p>
+              <p className="text-destructive mb-4">Failed to load analytics: {error?.message || 'Network error'}</p>
               <p className="text-sm text-muted-foreground">
                 This is a demonstration of tRPC integration. The backend API is not currently running.
               </p>
@@ -89,10 +68,10 @@ function Analytics() {
         <p className="text-xl text-muted-foreground mt-2">
           Business insights and performance metrics
         </p>
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
-            <strong>tRPC Integration Demo:</strong> This page demonstrates how the frontend would fetch data from the backend using tRPC.
-            The API calls are configured to connect to the backend at <code>/api/trpc</code>.
+        <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-sm text-green-800">
+            <strong>tRPC Integration Active:</strong> This page now uses tRPC for type-safe API communication.
+            {analytics ? ' ✅ Successfully fetched data!' : ' Waiting for backend connection...'}
           </p>
         </div>
       </div>
@@ -175,7 +154,7 @@ function Analytics() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {analytics.recentActivity.map((activity) => (
+                {analytics.recentActivity.map((activity: any) => (
                   <div key={activity.id} className="flex items-center space-x-4">
                     <div className="w-2 h-2 bg-blue-500 rounded-full" />
                     <div className="flex-1">

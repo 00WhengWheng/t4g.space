@@ -5,6 +5,7 @@ import './index.css'
 import App from './router.tsx'
 import { auth0Config, validateAuth0Config } from './lib/auth0'
 import { TenantAuthProvider } from './lib/tenant-auth'
+import { TrpcProvider } from './lib/trpc-provider'
 
 // Validate Auth0 configuration
 try {
@@ -17,7 +18,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Auth0Provider {...auth0Config}>
       <TenantAuthProvider>
-        <App />
+        <TrpcProvider>
+          <App />
+        </TrpcProvider>
       </TenantAuthProvider>
     </Auth0Provider>
   </StrictMode>,

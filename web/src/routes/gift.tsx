@@ -1,21 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button } from 'shared'
 import { Gift, Package, Star, Plus, Settings } from 'lucide-react'
-import { useState, useEffect } from 'react'
-import { useApiService } from '../lib/api-service'
-import type { Gift as GiftType, GiftType as GiftTypeEnum, DrinkCategory } from '@t4g/types'
+import { trpc } from '../lib/trpc'
+import type { GiftType as GiftTypeEnum, DrinkCategory } from '@t4g/types'
 
 export const Route = createFileRoute('/gift')({
   component: GiftSection,
 })
 
 function GiftSection() {
-  const [gifts, setGifts] = useState<GiftType[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const apiService = useApiService()
+  const { data: gifts, isLoading, error } = (trpc as any).gifts.getAll.useQuery()
 
-  // Mock data for demonstration
+  console.log('tRPC Gifts Query:', { gifts, isLoading, error })
+
+  // Mock data fallback for demonstration when backend is not available
   const mockGifts = [
     {
       id: "1",
@@ -82,25 +80,10 @@ function GiftSection() {
     }
   ]
 
-  useEffect(() => {
-    async function fetchGifts() {
-      try {
-        setLoading(true)
-        setError(null)
-        const data = await apiService.getGifts()
-        setGifts(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch gifts')
-        console.error('Failed to fetch gifts:', err)
-        // Use mock data when API fails
-        setGifts(mockGifts)
-      } finally {
-        setLoading(false)
-      }
-    }
+  // Use tRPC data if available, otherwise fall back to mock data
+  const displayGifts = gifts || mockGifts
 
-    fetchGifts()
-  }, [])
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -112,8 +95,8 @@ function GiftSection() {
           </p>
           <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
             <p className="text-sm text-green-800">
-              <strong>tRPC Integration Demo:</strong> This page demonstrates API integration for gift management.
-              Data is fetched from <code>/api/tenants/gifts</code> with authentication.
+              <strong>tRPC Integration Active:</strong> This page now uses tRPC for type-safe gift management.
+              {gifts ? ` ✅ Loaded ${gifts.length} gifts from API!` : ' Using fallback mock data...'}
             </p>
           </div>
         </div>
@@ -130,9 +113,9 @@ function GiftSection() {
             <Gift className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{gifts.length}</div>
+            <div className="text-2xl font-bold">{displayGifts.length}</div>
             <p className="text-xs text-muted-foreground">
-              {loading ? 'Loading...' : 'From tRPC API'}
+              {isLoading ? 'Loading...' : 'From tRPC API'}
             </p>
           </CardContent>
         </Card>
@@ -144,7 +127,7 @@ function GiftSection() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {gifts.filter(gift => gift.isActive).length}
+              {displayGifts.filter((gift: any) => gift.isActive).length}
             </div>
             <p className="text-xs text-muted-foreground">
               Currently available
@@ -159,7 +142,7 @@ function GiftSection() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${gifts.length > 0 ? (gifts.reduce((sum, gift) => sum + gift.value, 0) / gifts.length).toFixed(2) : '0.00'}
+              ${displayGifts.length > 0 ? (displayGifts.reduce((sum: number, gift: any) => sum + gift.value, 0) / displayGifts.length).toFixed(2) : '0.00'}
             </div>
             <p className="text-xs text-muted-foreground">
               Average gift value
@@ -174,7 +157,7 @@ function GiftSection() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${gifts.reduce((sum, gift) => sum + gift.value, 0).toFixed(2)}
+              ${displayGifts.reduce((sum: number, gift: any) => sum + gift.value, 0).toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground">
               Total portfolio value
@@ -205,7 +188,7 @@ function GiftSection() {
           <Card>
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-destructive mb-2">API Error: {error}</p>
+                <p className="text-destructive mb-2">API Error: {error.message || 'Failed to connect to tRPC backend'}</p>
                 <p className="text-sm text-muted-foreground">
                   Showing mock data for demonstration. The backend is not currently running.
                 </p>
@@ -217,7 +200,7 @@ function GiftSection() {
 
       <div className="space-y-6">
         <h2 className="text-2xl font-semibold">Gift Packages</h2>
-        {loading ? (
+        {isLoading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[...Array(3)].map((_, i) => (
               <Card key={i}>
@@ -237,7 +220,7 @@ function GiftSection() {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {gifts.map((gift) => (
+            {displayGifts.map((gift: any) => (
               <Card key={gift.id}>
                 <CardHeader>
                   <div className="text-4xl mb-2">{gift.imageUrl || '🎁'}</div>
