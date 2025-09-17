@@ -27,6 +27,13 @@ export const TenantGuard = ({
     getBusinessName 
   } = useTenantAuth()
 
+  // Development bypass for testing tRPC integration
+  const isDevelopment = import.meta.env.DEV && window.location.search.includes('dev=true')
+  
+  if (isDevelopment) {
+    return <>{children}</>
+  }
+
   // Show loading state
   if (isLoading) {
     return fallback || (
