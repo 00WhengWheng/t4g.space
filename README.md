@@ -1,10 +1,10 @@
 # T4G.Space - Tag 4 Gift Business Platform
 
-A modern business dashboard platform built with Turborepo, featuring both web and mobile applications with shared components, Auth0 tenant authentication, and tRPC API integration.
+A modern business dashboard platform built with NX monorepo, featuring both web and mobile applications with shared components, Auth0 tenant authentication, and tRPC API integration.
 
 ## 📁 Project Structure
 
-This is a turborepo monorepo with the following structure:
+This is an NX monorepo with the following structure:
 
 ```
 t4g.space/
@@ -14,7 +14,8 @@ t4g.space/
 ├── packages/
 │   └── types/              # Shared TypeScript types for frontend/backend
 ├── backend/                 # Git submodule: t4g-NestJS-Fastify backend
-└── turbo.json              # Turborepo configuration
+├── nx.json                 # NX workspace configuration
+└── tsconfig.base.json      # Base TypeScript configuration
 ```
 
 ## 🔐 Authentication
@@ -80,6 +81,28 @@ npm run mobile:dev
 
 # Shared package only
 npm run shared:dev
+```
+
+### NX Commands
+
+You can also use NX commands directly for more control:
+
+```bash
+# Run specific target for specific project
+nx run web:build
+nx run mobile:dev
+nx run shared:lint
+
+# Run targets for multiple projects
+nx run-many -t build
+nx run-many -t lint --parallel
+
+# Show project graph
+nx graph
+
+# Show what's affected by changes
+nx affected:build
+nx affected:test
 ```
 
 ## 📱 Applications
@@ -148,12 +171,14 @@ import { Button, Card } from 'shared/native'
 
 ## 🏗️ Architecture
 
-### Turborepo Configuration
+### NX Monorepo Configuration
 
-The project uses Turborepo for efficient monorepo management:
+The project uses NX for efficient monorepo management:
 - **Parallel builds**: All packages build in parallel with dependency awareness
-- **Shared caching**: Build outputs are cached for faster subsequent builds
-- **Task pipelines**: Coordinated build, lint, and development tasks
+- **Smart caching**: Build outputs and task results are cached for faster subsequent runs
+- **Task pipelines**: Coordinated build, lint, and development tasks with dependency graph
+- **Affected builds**: Only rebuild what has changed since the last commit
+- **Project graph**: Visual representation of project dependencies
 
 ### Component Sharing Strategy
 
@@ -163,9 +188,10 @@ The project uses Turborepo for efficient monorepo management:
 
 ### Workspace Dependencies
 
-- `web` depends on `shared` for UI components
+- `web` depends on `shared` for UI components and `@t4g/types` for TypeScript types
 - `mobile` depends on `shared/native` for native components
 - `shared` provides both web and native component variants
+- `@t4g/types` provides shared TypeScript definitions
 
 ## 📦 Package Scripts
 
@@ -179,6 +205,12 @@ The project uses Turborepo for efficient monorepo management:
 - `npm run web:dev` - Web development only
 - `npm run mobile:dev` - Mobile development only
 - `npm run shared:dev` - Shared package development
+
+### NX Commands
+- `nx run-many -t build` - Build all packages
+- `nx run web:build` - Build specific package
+- `nx affected:build` - Build only affected packages
+- `nx graph` - Show project dependency graph
 
 ## 🚀 Deployment
 
@@ -219,4 +251,5 @@ This project is licensed under the MIT License.
 2. Install dependencies: `npm install`
 3. Make your changes
 4. Test across packages: `npm run build && npm run lint`
-5. Submit a pull request
+5. Use NX commands for targeted development: `nx run web:dev` or `nx affected:build`
+6. Submit a pull request

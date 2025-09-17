@@ -3,22 +3,37 @@
   "private": true,
   "version": "0.0.0",
   "packageManager": "npm@10.8.3",
-  "workspaces": [
-    "web",
-    "mobile",
-    "shared",
-    "packages/*"
-  ],
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "type-check": "turbo type-check",
-    "web:dev": "turbo dev --filter=web",
-    "mobile:dev": "turbo dev --filter=mobile",
-    "shared:dev": "turbo dev --filter=shared"
+    "build": "nx run-many -t build",
+    "dev": "nx run-many -t dev --parallel",
+    "lint": "nx run-many -t lint",
+    "type-check": "nx run-many -t type-check",
+    "web:dev": "nx run web:dev",
+    "mobile:dev": "nx run mobile:dev",
+    "shared:dev": "nx run shared:dev",
+    "web:build": "nx run web:build",
+    "mobile:build": "nx run mobile:build",
+    "shared:build": "nx run shared:build",
+    "types:build": "nx run types:build"
   },
   "devDependencies": {
-    "turbo": "^2.3.1"
-  }
+    "@eslint/js": "^9.8.0",
+    "@nx/eslint": "^21.5.2",
+    "@nx/eslint-plugin": "21.5.2",
+    "@nx/js": "21.5.2",
+    "@nx/react": "^21.5.2",
+    "@swc-node/register": "~1.9.1",
+    "@swc/core": "~1.5.7",
+    "@swc/helpers": "~0.5.11",
+    "@types/node": "20.19.9",
+    "eslint": "^9.8.0",
+    "eslint-config-prettier": "^10.0.0",
+    "jsonc-eslint-parser": "^2.1.0",
+    "nx": "21.5.2",
+    "prettier": "^2.6.2",
+    "tslib": "^2.3.0",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.40.0"
+  },
+  "dependencies": {}
 }

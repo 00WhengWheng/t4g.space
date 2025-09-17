@@ -18,12 +18,13 @@
     "@tanstack/router-vite-plugin": "^1.131.44",
     "@trpc/client": "^11.5.1",
     "@trpc/react-query": "^11.5.1",
+    "@t4g/types": "file:../packages/types",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.544.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "shared": "*",
+    "shared": "file:../shared",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
