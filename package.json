@@ -3,22 +3,21 @@
   "private": true,
   "version": "0.0.0",
   "packageManager": "npm@10.8.3",
-  "workspaces": [
-    "web",
-    "mobile",
-    "shared",
-    "packages/*"
-  ],
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "type-check": "turbo type-check",
-    "web:dev": "turbo dev --filter=web",
-    "mobile:dev": "turbo dev --filter=mobile",
-    "shared:dev": "turbo dev --filter=shared"
+    "build": "nx run-many -t build",
+    "dev": "nx run-many -t dev --parallel",
+    "lint": "nx run-many -t lint",
+    "type-check": "nx run-many -t type-check",
+    "web:dev": "nx run web:dev",
+    "mobile:dev": "nx run mobile:dev",
+    "shared:dev": "nx run shared:dev",
+    "web:build": "nx run web:build",
+    "mobile:build": "nx run mobile:build",
+    "shared:build": "nx run shared:build",
+    "types:build": "nx run types:build"
   },
   "devDependencies": {
-    "turbo": "^2.3.1"
+    "@nx/eslint": "^21.5.2",
+    "nx": "21.5.2"
   }
 }
