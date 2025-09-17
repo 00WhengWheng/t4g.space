@@ -15,9 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@t4g/types": ["packages/types/src/index.ts"],
       "shared": ["shared/src/index.ts"],
-      "shared/native": ["shared/src/native.ts"],
-      "@t4g/types": ["packages/types/src/index.ts"]
+      "shared/native": ["shared/src/native.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
